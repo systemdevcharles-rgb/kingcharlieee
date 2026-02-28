@@ -13,7 +13,7 @@ import './ChatBot.css';
      mistralai/mistral-7b-instruct:free       ← good quality
      google/gemma-2-9b-it:free               ← Google's model
 ───────────────────────────────────────────────────────────── */
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || '';
+const OPENROUTER_API_KEY = process.env.REACT_APP_OPENROUTER_API_KEY || '';
 const MODEL              = 'meta-llama/llama-3.2-3b-instruct:free';
 const SITE_URL           = 'https://meep0zero.github.io'; 
 const SITE_NAME          = 'King Charlie Portfolio';
