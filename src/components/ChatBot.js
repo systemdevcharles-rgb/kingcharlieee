@@ -106,7 +106,7 @@ const ChatBot = () => {
     return () => window.removeEventListener('keydown', handler);
   }, [isOpen]);
 
-  /* ── Send message via Claude API ──────────────────────── */
+  /* ── Send message via OpenRouter API ──────────────────────── */
   const sendMessage = useCallback(async (text) => {
     if (!text.trim() || isLoading) return;
 
@@ -129,53 +129,41 @@ const ChatBot = () => {
       const controller = new AbortController();
       abortRef.current = controller;
 
-      const response = await fetch('http://localhost:11434/api/chat', {
+      // OpenRouter API call (non-streaming for simplicity)
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${process.env.REACT_APP_OPENROUTER_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': window.location.origin,
+        },
         body: JSON.stringify({
-          model: 'llama3.2',
+          model: 'mistralai/mistral-7b-instruct:free', // FREE model
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             ...history,
           ],
-          stream: true,
+          temperature: 0.7,
+          max_tokens: 500,
         }),
       });
 
-      if (!response.ok) throw new Error(`API error ${response.status}`);
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let accumulated = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n').filter(Boolean);
-
-        for (const line of lines) {
-          try {
-            const parsed = JSON.parse(line);
-            if (parsed.message?.content) {
-              accumulated += parsed.message.content;
-              setMessages(prev => prev.map(m =>
-                m.id === botId ? { ...m, text: accumulated } : m
-              ));
-            }
-          } catch { /* skip */ }
-        }
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`OpenRouter error ${response.status}: ${errorData}`);
       }
 
-      // Finalise message
+      const data = await response.json();
+      const botResponse = data.choices[0]?.message?.content || "Sorry, I couldn't generate a response.";
+
+      // Update with the complete response
       setMessages(prev => prev.map(m =>
-        m.id === botId ? { ...m, streaming: false, text: accumulated || '...' } : m
+        m.id === botId ? { ...m, streaming: false, text: botResponse } : m
       ));
 
     } catch (err) {
       if (err.name === 'AbortError') return;
-      console.error('Claude API error:', err);
+      console.error('OpenRouter API error:', err);
       setMessages(prev => prev.map(m =>
         m.id === botId
           ? { ...m, streaming: false, text: "Hmm, something went wrong on my end. Try again in a sec." }
@@ -260,9 +248,6 @@ const ChatBot = () => {
                   </div>
                   <span className="cb-msg-ts">{msg.ts}</span>
                 </div>
-                {/* {msg.role === 'user' && (
-                  <div className="cb-msg-avatar cb-msg-avatar--user"><FaUser /></div>
-                )} */}
               </div>
             ))}
 
@@ -333,7 +318,7 @@ const ChatBot = () => {
               <FaServer title="Infrastructure" />
               <FaMicrochip title="AI" />
             </div>
-            <span className="cb-footer-label">Powered by Gemini</span>
+            <span className="cb-footer-label">Powered by OpenRouter</span>
           </div>
 
         </div>
