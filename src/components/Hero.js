@@ -7,8 +7,11 @@ import {
   FaCalendarAlt, FaMapMarkerAlt,
   FaTimes, FaChevronLeft, FaChevronRight, FaImages,
   FaArrowRight, FaArrowUp, FaHeart,
-  FaFileAlt, FaCheckCircle, FaMobile
+  FaFileAlt, FaCheckCircle, FaMobile,
+  FaSun, FaMoon, FaJs
 } from 'react-icons/fa';
+import { FaVuejs } from 'react-icons/fa';
+import { SiTailwindcss } from 'react-icons/si'; 
 import { SiInertia } from 'react-icons/si';
 import './Hero.css';
 
@@ -20,7 +23,6 @@ import ticketingImage4 from '../assets/projects/ticketing-4.png';
 import ticketingImage5 from '../assets/projects/ticketing-5.png';
 import ticketingImage6 from '../assets/projects/ticketing-6.png';
 import ticketingImage7 from '../assets/projects/ticketing-7.png';
-import ticketingImage8 from '../assets/projects/ticketing-8.png';
 import hrisImage1      from '../assets/projects/hris-1.png';
 import hrisImage2      from '../assets/projects/hris-2.png';
 import hrisImage3      from '../assets/projects/hris-3.png';
@@ -45,8 +47,8 @@ import ecommerceImage15 from '../assets/projects/ecommerce-15.png';
 import ecommerceImage16 from '../assets/projects/ecommerce-16.png';
 import ecommerceImage17 from '../assets/projects/ecommerce-17.png';
 import ecommerceImage18 from '../assets/projects/ecommerce-18.png';
-// Uncomment and add your resume file:
 import resumePDF from '../assets/resume.pdf';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 /* ── Toast ─────────────────────────────────────────────── */
 const Toast = ({ message, type, onClose }) => {
@@ -102,7 +104,8 @@ const PROJECTS = [
     title: 'Ticketing System',
     description: 'Complete ticket management with role-based access, real-time notifications, and a reporting dashboard.',
     technologies: ['Laravel', 'MySQL', 'Inertia.js', 'React', 'Bootstrap'],
-    icon: <FaTicketAlt />,
+    icon: <FaTicketAlt style={{ color: '#000000', fontSize: '1.5rem'}} />,
+    button: { label: 'View Project', url: 'https://tlhesk.mabuhaygroup.com/',  icon: <FaExternalLinkAlt /> },
     status: 'Completed',
     gallery: [
       { id: 2, url: ticketingImage2, caption: 'Login Modal' },
@@ -111,14 +114,14 @@ const PROJECTS = [
       { id: 5, url: ticketingImage5, caption: 'CCTV Requisition Interface' },
       { id: 6, url: ticketingImage6, caption: 'Approval Request Interface' },
       { id: 7, url: ticketingImage7, caption: 'Report Generator' },
-      { id: 8, url: ticketingImage8, caption: 'Account Pending for approval' },
     ],
   },
   {
     title: 'HRIS System',
     description: 'Human Resource Information System with employee management, payroll processing, and attendance tracking.',
     technologies: ['Laravel', 'MySQL', 'Blade', 'JavaScript'],
-    icon: <FaUsers />,
+    icon: <FaUsers style={{ color: '#000000', fontSize: '1.5rem' }}/>,
+    button: { label: 'Non Disclosure Agreement', url: '#',  icon: <FaExternalLinkAlt /> },
     status: 'Completed',
     gallery: [
       { id: 1, url: hrisImage1, caption: 'Employee management dashboard' },
@@ -130,7 +133,7 @@ const PROJECTS = [
     title: 'Inventory System',
     description: 'Comprehensive inventory tracking with barcode scanning, stock alerts, and detailed analytics.',
     technologies: ['Laravel', 'MySQL', 'jQuery', 'DataTables'],
-    icon: <FaBox />,
+    icon: <FaBox style={{ color: '#000000', fontSize: '1.5rem' }}/>,
     status: 'Completed',
     gallery: [
       { id: 1, url: inventoryImage1, caption: 'Inventory dashboard with stock overview' },
@@ -142,7 +145,7 @@ const PROJECTS = [
     title: 'E-commerce + POS',
     description: 'Full-featured online shopping platform with an integrated Point of Sale system and payment processing.',
     technologies: ['Laravel', 'MySQL', 'React', 'Payment APIs'],
-    icon: <FaShoppingCart />,
+    icon: <FaShoppingCart style={{ color: '#000000', fontSize: '1.5rem' }}/>,
     status: 'In Development',
     gallery: [
       { id: 1, url: ecommerceImage1, caption: 'Coming soon — platform in development' },
@@ -167,14 +170,21 @@ const PROJECTS = [
   },
 ];
 
-const TECH_STACK = [
-  { icon: <FaLaravel />, label: 'Laravel'  },
-  { icon: <FaPhp />,     label: 'PHP'      },
-  { icon: <FaDatabase />,label: 'MySQL'    },
-  { icon: <FaReact />,   label: 'React'    },
-  { icon: <SiInertia />, label: 'Inertia'  },
-  { icon: <FaMobileAlt />,label:'Flutter'  },
-];
+const TECH_STACK = {
+  backend: [
+    { icon: <FaLaravel />, label: 'Laravel' },
+    { icon: <FaPhp />, label: 'PHP' },
+    { icon: <FaDatabase />, label: 'MySQL' },
+    { icon: <FaServer />, label: 'Node.js' },
+  ],
+  frontend: [
+    { icon: <FaReact />, label: 'React' },
+    { icon: <SiInertia />, label: 'Inertia' },
+    { icon: <FaJs />, label: 'JavaScript' },
+    { icon: <FaVuejs />, label: 'VueJS' },
+    { icon: <SiTailwindcss />, label: 'Tailwind CSS' },
+  ],
+};
 
 const EXPERTISE = [
   { icon: <FaCode />,    title: 'Backend Development',      sub: 'Laravel · PHP · RESTful APIs'             },
@@ -188,10 +198,12 @@ const SERVICES = [
   { title: 'Frontend Development',desc: 'Responsive UIs with modern frameworks'         },
   { title: 'Database Design',     desc: 'Optimised MySQL schemas for performance'       },
   { title: 'System Architecture', desc: 'Scalable, maintainable technical foundations'  },
+  { title: 'AI', desc: ' developing AI-powered solutions, creating intelligent applications, and leveraging generative AI to optimize development workflows and deliver cutting-edge technology.'  },
 ];
 
 const NAV_ITEMS = [
   { label: 'Home',       href: '#home'       },
+  { label: 'About',      href: '#about'      },
   { label: 'Projects',   href: '#projects'   },
   { label: 'Experience', href: '#experience' },
   { label: 'Contact',    href: '#contact'    },
@@ -207,6 +219,18 @@ const Hero = () => {
   const [showBackToTop,     setShowBackToTop]     = useState(false);
   const [activeNav,         setActiveNav]         = useState('home');
   const [resumeDownloading, setResumeDownloading] = useState(false);
+  const [darkMode,          setDarkMode]          = useState(() => {
+    return localStorage.getItem('theme') === 'dark' ||
+      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  });
+
+  /* ── Dark mode effect ────────────────────────────────── */
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
+
+  const toggleDarkMode = () => setDarkMode(d => !d);
 
   /* ── Scroll tracking ─────────────────────────────────── */
   useEffect(() => {
@@ -218,8 +242,7 @@ const Hero = () => {
           setScrollY(sy);
           setShowBackToTop(sy > 400);
 
-          // Active section detection
-          const sections = ['home', 'projects', 'experience', 'contact'];
+          const sections = ['home', 'about', 'projects', 'experience', 'contact'];
           for (const id of [...sections].reverse()) {
             const el = document.getElementById(id);
             if (el && el.getBoundingClientRect().top <= 120) {
@@ -236,23 +259,20 @@ const Hero = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  /* ── Scroll progress bar ─────────────────────────────── */
   const scrollPercent = Math.min(
     100,
     (scrollY / (document.documentElement.scrollHeight - window.innerHeight || 1)) * 100
   );
 
-  /* ── Reveal animation ────────────────────────────────── */
   useEffect(() => {
     const io = new IntersectionObserver(
       entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
       { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
     );
-    document.querySelectorAll('.reveal, .reveal-left, .reveal-scale').forEach(el => io.observe(el));
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-scale, .reveal-right').forEach(el => io.observe(el));
     return () => io.disconnect();
   }, []);
 
-  /* ── Toast helpers ───────────────────────────────────── */
   const toast = useCallback((type, message) => {
     const id = Date.now();
     setToasts(p => [...p, { id, type, message }]);
@@ -262,29 +282,20 @@ const Hero = () => {
     setToasts(p => p.filter(t => t.id !== id));
   }, []);
 
-  /* ── Resume download ─────────────────────────────────── */
   const handleDownloadResume = async () => {
     if (resumeDownloading) return;
     setResumeDownloading(true);
-
-    // Option A: If you have a PDF asset, use this:
     const link = document.createElement('a');
     link.href = resumePDF;
     link.download = 'resume.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
-    // Option B: Link to hosted resume (replace URL)
-    // window.open('https://your-host.com/resume.pdf', '_blank');
-
-    // Simulated download feedback:
     await new Promise(r => setTimeout(r, 1200));
     toast('success', 'Resume downloaded successfully');
     setResumeDownloading(false);
   };
 
-  /* ── Gallery helpers ─────────────────────────────────── */
   const openGallery = (project, index = 0) => {
     setGallery({ open: true, project, index });
     document.body.style.overflow = 'hidden';
@@ -309,7 +320,6 @@ const Hero = () => {
     return () => window.removeEventListener('keydown', handler);
   }, [gallery.open]);
 
-  /* ── Render ──────────────────────────────────────────── */
   return (
     <>
       {/* Scroll Progress */}
@@ -330,6 +340,18 @@ const Hero = () => {
               </a>
             ))}
           </div>
+          {/* Dark Mode Toggle */}
+          <button
+            className="dark-mode-toggle"
+            onClick={toggleDarkMode}
+            aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            <span className="toggle-track">
+              <span className="toggle-thumb">
+                {darkMode ? <FaMoon /> : <FaSun />}
+              </span>
+            </span>
+          </button>
         </div>
       </nav>
 
@@ -344,26 +366,25 @@ const Hero = () => {
       <section className="hero" id="home">
         <div className="hero-container">
 
+          {/* ── HEADER ──────────────────────────────────── */}
           <header className="site-header">
             <div className="header-layout">
-
-              {/* Left: Identity */}
               <div className="header-left">
-                <div className="eyebrow reveal">
-                  Full Stack Developer · Philippines
-                </div>
+
                 <h1 className="headline reveal delay-1">
                   King Charlie<br /><em>R. Dacillo</em>
                 </h1>
-                <h2 className="subheadline reveal delay-2">
-                  Software Developer
-                </h2>
+                <div className="eyebrow reveal">
+                  Full Stack Web Developer · Tagum City, Philippines
+                </div>
+                 <div className="eyebrow reveal">
+                  InfraOps / Software Developer / Content Creator
+                </div>
                 <p className="header-bio reveal delay-3">
                   Building reliable web applications with Laravel, React, and modern technologies.
                   Specialised in full-stack development with a background in IT infrastructure —
                   systems that work in production, not just on screen.
                 </p>
-
                 <div className="header-cta reveal delay-4">
                   <button
                     className="btn btn-primary"
@@ -374,14 +395,13 @@ const Hero = () => {
                       ? <><FaFileAlt /> Downloading…</>
                       : <><FaDownload /> Download Resume</>}
                   </button>
-                  <a href="#projects"   className="btn btn-outline">View Projects</a>
-                  <a href="#contact"    className="btn btn-ghost">
+                  <a href="#projects" className="btn btn-outline">View Projects</a>
+                  <a href="#contact"  className="btn btn-ghost">
                     Let's talk <FaArrowRight className="btn-arrow" />
                   </a>
                 </div>
               </div>
 
-              {/* Right: Profile */}
               <div className="header-right reveal-scale">
                 <div className="profile-frame">
                   <img
@@ -390,214 +410,251 @@ const Hero = () => {
                     className="profile-image"
                   />
                 </div>
-                {/* <div className="profile-status">
-                  <span className="status-dot" />
-                  Online
-                </div> */}
               </div>
             </div>
           </header>
 
-          {/* ── MAIN 3-COLUMN ──────────────────────────── */}
-          <main className="main-content">
+          {/* ── SIDEBAR + MAIN ──────────────────────────── */}
+          <div className="page-body">
 
-            {/* LEFT: Expertise */}
-            <aside className="left-column">
-              <div className="reveal-left">
-                <h3 className="panel-label">Core Expertise</h3>
-                <ul className="expertise-list">
-                  {EXPERTISE.map(({ icon, title, sub }) => (
-                    <li key={title} className="expertise-item">
-                      <span className="exp-icon">{icon}</span>
-                      <div className="exp-body">
-                        <h4>{title}</h4>
-                        <p>{sub}</p>
+            {/* LEFT STICKY SIDEBAR */}
+            <aside className="left-sidebar">
+              <div className="sidebar-inner reveal-left">
+                {/* Tech Stack Grid */}
+                <div className="sidebar-block">
+                  <h3 className="panel-label">Tech Stack</h3>
+                    <div className="tech-categories">
+                      <div className="tech-category">
+                        <span className="category-badge frontend">Frontend</span>
+                        <div className="tech-mini-grid">
+                          {TECH_STACK.frontend.map(({ icon, label }) => (
+                            <div key={label} className="tech-mini-cell" title={label}>
+                              {icon}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </li>
-                  ))}
-                </ul>
+                      <div className="tech-category">
+                        <span className="category-badge backend">Backend</span>
+                        <div className="tech-mini-grid">
+                          {TECH_STACK.backend.map(({ icon, label }) => (
+                            <div key={label} className="tech-mini-cell" title={label}>
+                              {icon}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                {/* Core Expertise */}
+                <div className="sidebar-block">
+                  <h3 className="panel-label">Core Expertise</h3>
+                  <ul className="expertise-list">
+                    {EXPERTISE.map(({ icon, title, sub }) => (
+                      <li key={title} className="expertise-item">
+                        <span className="exp-icon">{icon}</span>
+                        <div className="exp-body">
+                          <h4>{title}</h4>
+                          <p>{sub}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Contact */}
+                <div className="sidebar-block" id="contact">
+                  <h3 className="panel-label">Contact</h3>
+                  <div className="contact-list">
+                    <a href="mailto:dev.kcee37340@gmail.com" className="contact-row">
+                      <FaEnvelope /> <span>dev.kcee37340@gmail.com</span>
+                    </a>
+                    <a href="https://github.com/Meep0Zero" target="_blank" rel="noopener noreferrer" className="contact-row">
+                      <FaGithub /> <span>github.com/Meep0Zero</span>
+                    </a>
+                    <a href="#" className="contact-row" onClick={e => { e.preventDefault(); toast('info', 'LinkedIn coming soon'); }}>
+                      <FaLinkedin /> <span>LinkedIn</span>
+                    </a>
+                    <a href="#" className="contact-row" onClick={e => { e.preventDefault(); toast('info', 'Contact copied to clipboard'); }}>
+                      <FaMobile /> <span>+63 954 162 3514</span>
+                    </a>
+                  </div>
+                  <p className="avail-tag">
+                    <span className="status-dot" /> Available for opportunities
+                  </p>
+                </div>
+
+                {/* What I Do */}
+                <div className="sidebar-block">
+                  <h3 className="panel-label">What I Do</h3>
+                  <div className="services-list">
+                    {SERVICES.map(({ title, desc }) => (
+                      <div key={title} className="service-row">
+                        <h4>{title}</h4>
+                        <p>{desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
               </div>
             </aside>
 
-            {/* MIDDLE */}
-            <div className="middle-column">
+            {/* MAIN CONTENT AREA */}
+            <main className="main-feed">
 
-              {/* About */}
-              <section className="about-section reveal">
-                <h3 className="section-heading">About</h3>
-                <p className="about-text">
-                  A full-stack developer with a strong foundation in infrastructure operations
-                  and system development. I build reliable backend architectures with Laravel,
-                  craft intuitive interfaces with React and Inertia, and optimise data flows
-                  through thoughtful MySQL design. My infrastructure background means I think
-                  about performance, reliability, and maintenance from day one — not as an
-                  afterthought.
-                </p>
+              {/* ── ABOUT ─────────────────────────────────── */}
+              <section id="about" className="content-section reveal">
+                <div className="section-label-row">
+                  <h3 className="section-heading">About Me</h3>
+                </div>
+                <div className="about-grid">
+                  <div className="about-text-block">
+                    <p className="about-lead">
+                      A full-stack developer with a strong foundation in infrastructure operations
+                      and system development.
+                    </p>
+                    <p className="about-body">
+                      I build reliable backend architectures with Laravel,
+                      craft intuitive interfaces with React and Inertia, and optimise data flows
+                      through thoughtful MySQL design. My infrastructure background means I think
+                      about performance, reliability, and maintenance from day one — not as an
+                      afterthought.
+                    </p>&nbsp;
+                    <p className="about-body">
+                      Lately i've been diving into the Artificial Intelligence space, exploring how to integrate AI capabilities into web applications and automate workflows. I'm fascinated by the potential of AI to augment human creativity and problem-solving, and i'm excited to experiment with tools like OpenAI's APIs to build smarter, more intuitive applications.
+                      </p>
+                  </div>
+                  <div className="about-highlights">
+                    {EXPERTISE.map(({ icon, title, sub }) => (
+                      <div key={title} className="highlight-card">
+                        <span className="highlight-icon">{icon}</span>
+                        <div>
+                          <h4>{title}</h4>
+                          <p>{sub}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </section>
 
-              {/* Projects */}
-              <section id="projects" className="reveal">
-                <div className="section-header">
+              {/* ── PROJECTS ──────────────────────────────── */}
+              <section id="projects" className="content-section reveal">
+                <div className="section-label-row">
                   <h3 className="section-heading">Projects</h3>
-                  {/* <button
-                    className="view-all-btn"
-                    onClick={() => toast('info', 'Full project list coming soon')}
-                  >
-                    View all <FaArrowRight style={{ fontSize: '0.7em' }} />
-                  </button> */}
                 </div>
 
                 <div className="projects-list">
-                  {PROJECTS.map((project, i) => (
-                    <div key={i} className="project-card">
-                      <div className="project-card-header">
-                        <div className="project-icon">{project.icon}</div>
-                        <span className={`project-badge ${project.status === 'Completed' ? 'badge-done' : 'badge-wip'}`}>
-                          {project.status}
-                        </span>
-                      </div>
+                {PROJECTS.map((project, i) => (
+                  <div key={i} className="project-card">
+                    <div className="project-card-header">
+                      <div className="project-icon">{project.icon}</div>
+                      <span className={`project-badge ${project.status === 'Completed' ? 'badge-done' : 'badge-wip'}`}>
+                        {project.status}
+                      </span>
+                    </div>
 
-                      <h4 className="project-name">{project.title}</h4>
-                      <p className="project-desc">{project.description}</p>
+                    <h4 className="project-name">{project.title}</h4>
+                    <p className="project-desc">{project.description}</p>
 
-                      {project.gallery && (
-                        <div className="inline-thumbs">
-                          {project.gallery.slice(0, 2).map((img, idx) => (
-                            <div
-                              key={img.id}
-                              className="thumb"
-                              style={{ backgroundImage: `url(${img.url})` }}
-                              onClick={() => openGallery(project, idx)}
-                              role="button"
-                              aria-label={`View image ${idx + 1}`}
-                            />
-                          ))}
-                          <button className="gallery-trigger" onClick={() => openGallery(project)}>
-                            <FaImages /> Gallery
-                          </button>
-                        </div>
-                      )}
-
-                      <div className="tech-pills">
-                        {project.technologies.slice(0, 4).map((t, ti) => (
-                          <span key={ti} className="pill">{t}</span>
+                    {project.gallery && (
+                      <div className="inline-thumbs">
+                        {project.gallery.slice(0, 2).map((img, idx) => (
+                          <div
+                            key={img.id}
+                            className="thumb"
+                            style={{ backgroundImage: `url(${img.url})` }}
+                            onClick={() => openGallery(project, idx)}
+                            role="button"
+                            aria-label={`View image ${idx + 1}`}
+                          />
                         ))}
-                        {project.technologies.length > 4 && (
-                          <span className="pill">+{project.technologies.length - 4}</span>
-                        )}
+                        <button className="gallery-trigger" onClick={() => openGallery(project)}>
+                          <FaImages /> Gallery ({project.gallery.length})
+                        </button>
+                      </div>
+                    )}
+                    <div className="tech-pills">
+                      {project.technologies.slice(0, 4).map((t, ti) => (
+                        <span key={ti} className="pill">{t}</span>
+                      ))}
+                      {project.technologies.length > 4 && (
+                        <span className="pill">+{project.technologies.length - 4}</span>
+                      )} &nbsp;
+                      {/* View Project Button */}
+                      {project.button && (
+                      <div className="project-actions">
+                        <a
+                          href={project.button.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-project"
+                        >
+                          {project.button.icon && <span className="btn-icon">{project.button.icon}</span>}
+                          {project.button.label}
+                        </a>
+                      </div>
+                    )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              </section>
+
+              {/* ── EXPERIENCE ────────────────────────────── */}
+              <section id="experience" className="content-section reveal">
+                <div className="section-label-row">
+                  <h3 className="section-heading">Experience</h3>
+                </div>
+
+                <div className="timeline">
+                  {EXPERIENCES.map((exp, i) => (
+                    <div key={exp.id} className="timeline-item">
+                      <div className="timeline-marker">
+                        <div className="timeline-dot" />
+                        {i < EXPERIENCES.length - 1 && <div className="timeline-line" />}
+                      </div>
+                      <div className="exp-card">
+                        <div className="exp-card-header">
+                          <div className="exp-card-title">
+                            <h4 className="exp-company">{exp.company}</h4>
+                            <p className="exp-role">{exp.role}</p>
+                          </div>
+                          <div className="exp-meta">
+                            <span className="exp-period">
+                              <FaCalendarAlt /> {exp.period}
+                            </span>
+                            <span className="exp-location">
+                              <FaMapMarkerAlt /> {exp.location}
+                            </span>
+                          </div>
+                        </div>
+
+                        <p className="exp-desc">{exp.description}</p>
+
+                        <ul className="exp-achievements">
+                          {exp.achievements.map((a, i) => <li key={i}>{a}</li>)}
+                        </ul>
+
+                        <div className="tech-pills">
+                          {exp.technologies.map((t, i) => <span key={i} className="pill">{t}</span>)}
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
               </section>
 
-              {/* Experience */}
-              <section id="experience" className="reveal">
-                <h3 className="section-heading">Experience</h3>
-                <div className="experience-list">
-                  {EXPERIENCES.map(exp => (
-                    <div key={exp.id} className="exp-card">
-                      <div className="exp-card-header">
-                        <div className="exp-card-title">
-                          <h4 className="exp-company">{exp.company}</h4>
-                          <p className="exp-role">{exp.role}</p>
-                        </div>
-                        <div className="exp-meta">
-                          <span className="exp-period">{exp.period}</span>
-                          <span className="exp-location">
-                            <FaMapMarkerAlt /> {exp.location}
-                          </span>
-                        </div>
-                      </div>
-
-                      <p className="exp-desc">{exp.description}</p>
-
-                      <ul className="exp-achievements">
-                        {exp.achievements.map((a, i) => <li key={i}>{a}</li>)}
-                      </ul>
-
-                      <div className="tech-pills">
-                        {exp.technologies.map((t, i) => <span key={i} className="pill">{t}</span>)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-            </div>
-
-            {/* RIGHT: Tech + Contact */}
-            <aside className="right-column">
-
-              <div className="reveal">
-                <h3 className="panel-label">Tech Stack</h3>
-                <div className="tech-grid">
-                  {TECH_STACK.map(({ icon, label }) => (
-                    <div key={label} className="tech-cell">
-                      {icon}
-                      <span>{label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="reveal delay-1" id="contact">
-                <h3 className="panel-label">Contact</h3>
-                <div className="contact-list">
-                  <a href="mailto:dev.kcee37340@gmail.com" className="contact-row">
-                    <FaEnvelope /> dev.kcee37340@gmail.com
-                  </a>
-                  <a
-                    href="https://github.com/Meep0Zero"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="contact-row"
-                  >
-                    <FaGithub /> github.com/Meep0Zero
-                  </a>
-                  <a
-                    href="#"
-                    className="contact-row"
-                    onClick={e => { e.preventDefault(); toast('info', 'LinkedIn coming soon'); }}
-                  >
-                    <FaLinkedin /> LinkedIn
-                  </a>
-                  <a
-                    href="#"
-                    className="contact-row"
-                    onClick={e => { e.preventDefault(); toast('info', 'Contact copied to clipboard'); }}
-                  >
-                    <FaMobile /> +63 954 162 3514
-                  </a>
-                </div>
-                <p className="avail-tag">
-                  <span className="status-dot" /> Available for opportunities
-                </p>
-              </div>
-
-              <div className="reveal delay-2">
-                <h3 className="panel-label">What I Do</h3>
-                <div className="services-list">
-                  {SERVICES.map(({ title, desc }) => (
-                    <div key={title} className="service-row">
-                      <h4>{title}</h4>
-                      <p>{desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-            </aside>
-          </main>
+            </main>
+          </div>
         </div>
 
         {/* ── FOOTER ────────────────────────────────────── */}
         <footer className="site-footer" id="footer">
           <div className="footer-container">
-
             <div className="footer-top">
-
-              {/* Brand */}
               <div className="footer-brand reveal">
                 <p className="footer-wordmark">King Charlie</p>
                 <p className="footer-tagline">
@@ -605,37 +662,22 @@ const Hero = () => {
                   backend systems, and the infrastructure that keeps them running.
                 </p>
                 <div className="footer-social">
-                  <a
-                    href="https://github.com/Meep0Zero"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="social-pill"
-                  >
+                  <a href="https://github.com/Meep0Zero" target="_blank" rel="noopener noreferrer" className="social-pill">
                     <FaGithub /> GitHub
                   </a>
                   <a href="mailto:dev.kcee37340@gmail.com" className="social-pill">
                     <FaEnvelope /> Email
                   </a>
-                  <a
-                    href="#"
-                    className="social-pill"
-                    onClick={e => { e.preventDefault(); toast('info', 'LinkedIn coming soon'); }}
-                  >
+                  <a href="#" className="social-pill" onClick={e => { e.preventDefault(); toast('info', 'LinkedIn coming soon'); }}>
                     <FaLinkedin /> LinkedIn
                   </a>
                 </div>
               </div>
 
-              {/* Quick Links */}
               <div className="reveal delay-1">
                 <h4 className="footer-col-label">Navigation</h4>
                 <div className="footer-links-list">
-                  {[
-                    { label: 'Home',       href: '#home'       },
-                    { label: 'Projects',   href: '#projects'   },
-                    { label: 'Experience', href: '#experience' },
-                    { label: 'Contact',    href: '#contact'    },
-                  ].map(({ label, href }) => (
+                  {NAV_ITEMS.map(({ label, href }) => (
                     <a key={label} href={href} className="footer-nav-link">
                       {label}
                       <FaArrowRight />
@@ -644,7 +686,6 @@ const Hero = () => {
                 </div>
               </div>
 
-              {/* Contact column */}
               <div className="reveal delay-2">
                 <h4 className="footer-col-label">Get In Touch</h4>
                 <a href="mailto:dev.kcee37340@gmail.com" className="footer-contact-email">
@@ -666,16 +707,14 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Bottom bar */}
             <div className="footer-bottom">
               <p className="footer-copy">
                 &copy; {new Date().getFullYear()} King Charlie R. Dacillo. All rights reserved.
               </p>
               <p className="footer-made">
-                Made with <FaHeart className="heart" /> React.js
+                Made with <FaHeart className="heart" /> Love
               </p>
             </div>
-
           </div>
         </footer>
       </section>
@@ -691,7 +730,6 @@ const Hero = () => {
                 <FaTimes />
               </button>
             </div>
-
             <div className="modal-image-wrap">
               <img
                 src={gallery.project.gallery[gallery.index].url}
@@ -699,7 +737,6 @@ const Hero = () => {
               />
               <p className="modal-caption">{gallery.project.gallery[gallery.index].caption}</p>
             </div>
-
             <div className="modal-nav">
               <button className="modal-nav-btn" onClick={galleryPrev} aria-label="Previous">
                 <FaChevronLeft />
@@ -723,15 +760,6 @@ const Hero = () => {
           </div>
         </div>
       )}
-
-      {/* ── BACK TO TOP ───────────────────────────────── */}
-      {/* <button
-        className={`back-to-top${showBackToTop ? ' visible' : ''}`}
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        aria-label="Back to top"
-      >
-        <FaArrowUp />
-      </button> */}
     </>
   );
 };

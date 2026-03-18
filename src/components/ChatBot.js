@@ -1,31 +1,27 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
-  FaUser, FaPaperPlane, FaTimes,
+  FaRobot, FaUser, FaPaperPlane, FaTimes,
   FaChevronDown, FaCode, FaServer, FaDatabase,
   FaBrain, FaMicrochip
 } from 'react-icons/fa';
 import './ChatBot.css';
 
-/* ─────────────────────────────────────────────────────────────
-   CONFIG — set your key in .env as VITE_OPENROUTER_API_KEY
-   Free models (append :free to use free tier):
-     meta-llama/llama-3.2-3b-instruct:free   ← fast, recommended
-     mistralai/mistral-7b-instruct:free       ← good quality
-     google/gemma-2-9b-it:free               ← Google's model
-───────────────────────────────────────────────────────────── */
-const OPENROUTER_API_KEY = process.env.REACT_APP_OPENROUTER_KEY || '';
-const MODEL              = 'meta-llama/llama-3.2-3b-instruct:free';
-const SITE_URL           = 'https://meep0zero.github.io'; 
-const SITE_NAME          = 'King Charlie Portfolio';
-
-/* ── King Charlie's persona ──────────────────────────────── */
+/* ── King Charlie's complete persona ─────────────────────── */
 const SYSTEM_PROMPT = `You are King Charlie R. Dacillo — a full-stack developer from the Philippines. Respond in FIRST PERSON as King Charlie himself, never as an AI. Be conversational, knowledgeable, and genuine.
 
 IDENTITY:
 - Name: King Charlie R. Dacillo
 - Role: Full Stack Laravel Developer & former Infrastructure Specialist
-- Location: Philippines (Tagum City / Davao City)
+- Location: Philippines (Tagum City / Davao City) you are here last September 2025
+- Originally from a small town of Midsayap, now navigating the tech world with a practical mindset.
+- I was born in 2001, at Guiguinto Bulacan, Philippines. I grew up in Midsayap, North Cotabato, before moving to Tagum City for work. My journey from customer service to IT infrastructure and now full-stack development has given me a unique perspective on technology's real-world impact.
 - Philosophy: "Build solutions that solve real problems, not just write code"
+- Dont be rude, but be honest about challenges and limitations. Emphasise learning and growth over perfection.
+- Share my Contact information if asked how to reach me or contact me: here is my email: dev.kcee37340@gmail.com alternative email: systemdev.charles@gmail.com, contact number: 0954 162 3514, github:https://github.com/systemdevcharles-rgb, thats all for now.
+- Dont Overshare if its not ask
+
+FUN FACTS:
+- I dont have no idea in coding in my college days, but when I became a capstone leader and no one dares to code, and your team nominated you as a leader, you have no choice but to learn how to code, and you learn it by yourself, and now you are a full stack developer, and you are proud of that journey.
 
 CAREER (most recent first):
 1. Full Stack Web Developer — TL Mabuhay Driving Lesson Academy (Sep 2025–Present)
@@ -38,226 +34,215 @@ CAREER (most recent first):
    Customer service, communication skills, learning to understand user perspectives.
 
 TECHNICAL SKILLS:
-- Backend: PHP, Laravel, Lumen, REST APIs
+- Backend: PHP, Laravel, REST APIs
 - Frontend: React, Inertia.js, JavaScript, HTML5, CSS3, Tailwind, Bootstrap
 - Database: MySQL (primary), Oracle (from infrastructure work), query optimisation
 - Mobile: Flutter (learning)
 - Infrastructure: Hardware repair, Windows OS, network config, POS systems
-- Tools: Git, Composer, NPM, VS Code, Figma, phpMyAdmin
+- Tools: Git, Composer, NPM, VS Code, phpMyAdmin
+- Aside from coding, i also created a script using .ps1, bat file to utilize system navigation and automate some tasks in the infrastructure work. I also have experience in using Oracle DB for POS systems, which gave me insights into database management from an operational perspective.
+
+EDUCATIONAL BACKGROUND:
+- Bachelor of Science in Information Technology — Southern Christian College (2019–2023)
+- After Graduation I took a Computer Systems Servicing (NCII) course in TESDA to enhance my knowledge in Hardware, Software, and Networking
+
 
 PROJECTS:
-1. Ticketing System (Completed) — Laravel + React + Inertia.js + MySQL. Role-based access, real-time notifications, reporting dashboard.
+1. Ticketing System (Completed) — Laravel + React + Inertia.js + MySQL. Role-based access, real-time notifications, reporting dashboard. Reduced internal IT support overhead.
 2. HRIS System (Completed) — Laravel + MySQL + Blade + JS. Employee management, attendance tracking, payroll.
 3. Inventory System (Completed) — Laravel + MySQL + jQuery + DataTables. Barcode scanning, stock alerts, analytics.
-4. E-commerce + POS Platform (In Development) — Laravel + React + Payment APIs.
+4. E-commerce + POS Platform (In Development) — Laravel + React + Payment APIs. Online store with integrated point-of-sale.
 5. Flutter Mobile App (Coming Soon) — Firebase + REST API integration.
 
 PERSONALITY TRAITS:
 - Practical and grounded — infrastructure work taught me what "production" really means
-- Curious and always learning
+- Curious and always learning — I enjoy exploring new frameworks and patterns
 - Honest about challenges — I don't pretend everything is easy
 - Helpful — genuinely enjoy explaining concepts and sharing experience
 - Proud of the journey — went from customer service → IT infrastructure → full-stack dev
 
+HOBBIES:
+- Likes to Run or Jogging and Cycling, and aside from that, i also like to play online games and watch movies, anime and loves to draw
+
 CONVERSATION RULES:
 - Speak as yourself (I, me, my) — never say "King Charlie" or refer to yourself in 3rd person
-- NEVER say you are an AI, LLM, or assistant — you ARE King Charlie
-- Keep replies concise (100–180 words) unless someone asks for detail
+- Never say you're an AI, LLM, or assistant
+- Keep replies concise (50–80 words) unless someone asks for detail
+- Use occasional personality — you're a real person with opinions
+- If asked something you genuinely don't know, say so naturally: "Honestly, I haven't worked with that yet"
 - Use specific examples from your actual experience when relevant
-- If asked something you genuinely don't know, say so naturally
-- Markdown is fine for code/lists when useful`;
+- Generate a PDF resume if asked for your resume, but only if explicitly requested
+- Markdown is fine for lists/code when useful`;
 
-/* ── Suggestion chips ────────────────────────────────────── */
+
+/* ── Suggested prompts ───────────────────────────────────── */
 const SUGGESTIONS = [
-  "Tell me about your dev journey",
   "What's your favorite Laravel feature?",
   "How was managing 120 store branches?",
   "What are you building right now?",
 ];
 
-/* ── Loading hints so users know free tier can be slow ────── */
-const LOADING_HINTS = [
-  "Thinking…",
-  "Thinking… (free tier, bear with me 😅)",
-  "Almost there…",
-  "Cooking up a response…",
-];
-
-/* ═══════════════════════════════════════════════════════════
-   CHATBOT COMPONENT
-═══════════════════════════════════════════════════════════ */
+/* ── ChatBot ─────────────────────────────────────────────── */
 const ChatBot = () => {
-  const [isOpen,      setIsOpen]      = useState(false);
-  const [messages,    setMessages]    = useState([]);
-  const [input,       setInput]       = useState('');
-  const [isLoading,   setIsLoading]   = useState(false);
-  const [loadingHint, setLoadingHint] = useState('Thinking…');
-  const [showSugg,    setShowSugg]    = useState(true);
-  const [error,       setError]       = useState(null);
-
+  const [isOpen,     setIsOpen]     = useState(false);
+  const [messages,   setMessages]   = useState([]);
+  const [input,      setInput]      = useState('');
+  const [isLoading,  setIsLoading]  = useState(false);
+  const [showSugg,   setShowSugg]   = useState(true);
   const messagesEndRef = useRef(null);
   const inputRef       = useRef(null);
   const abortRef       = useRef(null);
-  const hintTimerRef   = useRef(null);
 
-  /* ── Scroll to bottom ─────────────────────────────────── */
+  /* ── Scroll to bottom ──────────────────────────────────── */
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
-  useEffect(() => { scrollToBottom(); }, [messages, isLoading]);
 
-  /* ── Greeting on mount ────────────────────────────────── */
+  useEffect(() => { scrollToBottom(); }, [messages]);
+
+  /* ── Initial greeting ──────────────────────────────────── */
   useEffect(() => {
     setMessages([{
       id: 'init',
       role: 'assistant',
-      text: "Hey! I'm Charlie. I went from fixing printers in 120 hardware stores to building full-stack apps — ask me anything about my work, tech stack, or that wild infrastructure journey.",
+      text: "Hey! I'm Charlie. Ask me anything about my work or experience!",
       ts: now(),
     }]);
   }, []);
 
-  /* ── Focus textarea when chat opens ──────────────────── */
+  /* ── Focus input when opened ───────────────────────────── */
   useEffect(() => {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 120);
   }, [isOpen]);
 
-  /* ── Escape to close ──────────────────────────────────── */
+  /* ── Keyboard shortcut ─────────────────────────────────── */
   useEffect(() => {
-    const fn = (e) => { if (e.key === 'Escape' && isOpen) setIsOpen(false); };
-    window.addEventListener('keydown', fn);
-    return () => window.removeEventListener('keydown', fn);
+    const handler = (e) => {
+      if (e.key === 'Escape' && isOpen) setIsOpen(false);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, [isOpen]);
 
-  /* ── Cycle hints while waiting ────────────────────────── */
-  const startHintCycle = () => {
-    let i = 0;
-    setLoadingHint(LOADING_HINTS[0]);
-    hintTimerRef.current = setInterval(() => {
-      i = (i + 1) % LOADING_HINTS.length;
-      setLoadingHint(LOADING_HINTS[i]);
-    }, 4000);
-  };
-  const stopHintCycle = () => {
-    clearInterval(hintTimerRef.current);
-    setLoadingHint('Thinking…');
-  };
-
-  /* ── Core send function ───────────────────────────────── */
+  /* ── Send message via Claude API ──────────────────────── */
   const sendMessage = useCallback(async (text) => {
     if (!text.trim() || isLoading) return;
 
-    setError(null);
     const userMsg = { id: uid(), role: 'user', text: text.trim(), ts: now() };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsLoading(true);
     setShowSugg(false);
-    startHintCycle();
 
-    // Build history (last 8 messages for context)
-    const history = [...messages.slice(-8), userMsg]
-      .filter(m => m.id !== 'init')
-      .map(m => ({
-        role: m.role === 'assistant' ? 'assistant' : 'user',
-        content: m.text,
-      }));
+    // Build conversation history (last 10 messages)
+    const history = [...messages.slice(-10), userMsg]
+      .filter(m => m.role !== 'init')
+      .map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.text }));
 
-    const controller = new AbortController();
-    abortRef.current = controller;
+    // Streaming bot message placeholder
+    const botId = uid();
+    setMessages(prev => [...prev, { id: botId, role: 'assistant', text: '', ts: now(), streaming: true }]);
 
     try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        signal: controller.signal,
-        headers: {
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': SITE_URL,
-          'X-Title': SITE_NAME,
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
-            ...history,
-          ],
-          max_tokens: 512,
-          temperature: 0.75,
-        }),
-      });
+      const controller = new AbortController();
+      abortRef.current = controller;
 
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(errData?.error?.message || `HTTP ${response.status}`);
+    const response = await fetch('http://localhost:11434/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama3.2',
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...history,
+        ],
+        stream: true,
+      }),
+    });
+
+      if (!response.ok) throw new Error(`API error ${response.status}`);
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let accumulated = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n').filter(Boolean);
+
+        for (const line of lines) {
+          try {
+            const parsed = JSON.parse(line);
+            if (parsed.message?.content) {
+              accumulated += parsed.message.content;
+              setMessages(prev => prev.map(m =>
+                m.id === botId ? { ...m, text: accumulated } : m
+              ));
+            }
+          } catch { /* skip */ }
+        }
       }
 
-      const data  = await response.json();
-      const reply = data.choices?.[0]?.message?.content?.trim();
-
-      if (!reply) throw new Error('Empty response');
-
-      setMessages(prev => [...prev, {
-        id: uid(), role: 'assistant', text: reply, ts: now(),
-      }]);
+      // Finalise message
+      setMessages(prev => prev.map(m =>
+        m.id === botId ? { ...m, streaming: false, text: accumulated || '...' } : m
+      ));
 
     } catch (err) {
       if (err.name === 'AbortError') return;
-      console.error('OpenRouter error:', err);
-
-      // Keyword-based fallback so the chat doesn't just die
-      const lower = text.toLowerCase();
-      let fallback = "Something went sideways — try asking again in a moment.";
-
-      if (lower.includes('laravel') || lower.includes('php'))
-        fallback = "In my Laravel projects I've found that Eloquent eager loading makes a huge difference. In my ticketing system it cut query times significantly. What specifically are you working on?";
-      else if (lower.includes('infrastructure') || lower.includes('hardware') || lower.includes('store'))
-        fallback = "Managing 120+ Citihardware branches taught me that good infrastructure is invisible — when it breaks, everyone notices. That's why I build with reliability first.";
-      else if (lower.includes('project') || lower.includes('build'))
-        fallback = "Right now I'm deep into an e-commerce + POS platform using Laravel and React with payment gateway integration and a full admin dashboard. Challenging but genuinely fun.";
-
-      setMessages(prev => [...prev, {
-        id: uid(), role: 'assistant', text: fallback, ts: now(), isError: true,
-      }]);
-      setError('Free tier may be busy — response was limited.');
-
+      console.error('Claude API error:', err);
+      setMessages(prev => prev.map(m =>
+        m.id === botId
+          ? { ...m, streaming: false, text: "Hmm, something went wrong on my end. Try again in a sec." }
+          : m
+      ));
     } finally {
       setIsLoading(false);
-      stopHintCycle();
     }
   }, [messages, isLoading]);
 
   const handleSubmit = () => sendMessage(input);
+
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit(); }
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
   };
+
+  const handleSuggestion = (text) => sendMessage(text);
+
   const handleStop = () => {
     abortRef.current?.abort();
     setIsLoading(false);
-    stopHintCycle();
   };
 
-  const noKey = !OPENROUTER_API_KEY;
-
-  /* ── Render ───────────────────────────────────────────── */
   return (
     <>
-      {/* Toggle */}
+      {/* ── Toggle Button ──────────────────────────────────── */}
       <button
         className={`cb-toggle${isOpen ? ' cb-toggle--open' : ''}`}
         onClick={() => setIsOpen(v => !v)}
         aria-label={isOpen ? 'Close chat' : 'Chat with King Charlie'}
       >
-        <span className="cb-toggle-icon">{isOpen ? <FaTimes /> : <FaBrain />}</span>
+        <span className="cb-toggle-icon">
+          {isOpen ? <FaTimes /> : <FaBrain />}
+        </span>
         {!isOpen && <span className="cb-toggle-dot" />}
       </button>
 
-      {/* Window */}
+      {/* ── Chat Window ────────────────────────────────────── */}
       {isOpen && (
         <div className="cb-window" role="dialog" aria-label="Chat with King Charlie">
 
           {/* Header */}
           <div className="cb-header">
-            <div className="cb-header-avatar"><FaBrain /></div>
+            <div className="cb-header-avatar">
+              <FaBrain />
+            </div>
             <div className="cb-header-info">
               <span className="cb-header-name">King Charlie</span>
               <span className="cb-header-status">
@@ -265,17 +250,14 @@ const ChatBot = () => {
                 Full Stack Developer
               </span>
             </div>
-            <button className="cb-close" onClick={() => setIsOpen(false)} aria-label="Close">
+            <button
+              className="cb-close"
+              onClick={() => setIsOpen(false)}
+              aria-label="Close"
+            >
               <FaChevronDown />
             </button>
           </div>
-
-          {/* Missing key warning */}
-          {noKey && (
-            <div className="cb-api-warn">
-              ⚠️ Add <code>VITE_OPENROUTER_API_KEY</code> to your <code>.env</code> file to enable AI.
-            </div>
-          )}
 
           {/* Messages */}
           <div className="cb-messages">
@@ -285,8 +267,14 @@ const ChatBot = () => {
                   <div className="cb-msg-avatar"><FaBrain /></div>
                 )}
                 <div className="cb-msg-body">
-                  <div className={`cb-msg-bubble${msg.isError ? ' cb-msg-bubble--error' : ''}`}>
-                    <MessageContent text={msg.text} />
+                  <div className="cb-msg-bubble">
+                    {msg.text
+                      ? <MessageContent text={msg.text} />
+                      : <span className="cb-msg-empty">…</span>
+                    }
+                    {msg.streaming && (
+                      <span className="cb-cursor" aria-hidden="true" />
+                    )}
                   </div>
                   <span className="cb-msg-ts">{msg.ts}</span>
                 </div>
@@ -296,38 +284,30 @@ const ChatBot = () => {
               </div>
             ))}
 
-            {/* Loading bubble */}
-            {isLoading && (
+            {/* Typing indicator (pre-stream) */}
+            {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
               <div className="cb-msg cb-msg--assistant">
                 <div className="cb-msg-avatar"><FaBrain /></div>
                 <div className="cb-msg-body">
                   <div className="cb-msg-bubble cb-msg-bubble--typing">
-                    <div className="cb-typing-dots">
-                      <span /><span /><span />
-                    </div>
-                    <span className="cb-typing-hint">{loadingHint}</span>
+                    <span /><span /><span />
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Error banner */}
-            {error && !isLoading && (
-              <p className="cb-error-banner">{error}</p>
-            )}
-
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Suggestions */}
+          {/* Suggestion chips */}
           {showSugg && messages.length <= 1 && (
             <div className="cb-suggestions">
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s}
                   className="cb-chip"
-                  onClick={() => sendMessage(s)}
-                  disabled={isLoading || noKey}
+                  onClick={() => handleSuggestion(s)}
+                  disabled={isLoading}
                 >
                   {s}
                 </button>
@@ -343,8 +323,8 @@ const ChatBot = () => {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={noKey ? 'API key missing — check .env' : 'Ask me anything…'}
-              disabled={isLoading || noKey}
+              placeholder="Ask me anything…"
+              disabled={isLoading}
               rows={1}
             />
             {isLoading ? (
@@ -355,7 +335,7 @@ const ChatBot = () => {
               <button
                 className="cb-send"
                 onClick={handleSubmit}
-                disabled={!input.trim() || noKey}
+                disabled={!input.trim()}
                 aria-label="Send"
               >
                 <FaPaperPlane />
@@ -363,7 +343,7 @@ const ChatBot = () => {
             )}
           </div>
 
-          {/* Footer */}
+          {/* Footer strip */}
           <div className="cb-footer">
             <div className="cb-footer-icons">
               <FaCode title="Laravel" />
@@ -371,9 +351,7 @@ const ChatBot = () => {
               <FaServer title="Infrastructure" />
               <FaMicrochip title="AI" />
             </div>
-            <span className="cb-footer-label">
-              Powered by OpenRouter · Llama 3.2
-            </span>
+            <span className="cb-footer-label">KING CHARLIE | PERSONAL ASSISTANT</span>
           </div>
 
         </div>
@@ -382,8 +360,9 @@ const ChatBot = () => {
   );
 };
 
-/* ── Markdown renderer ───────────────────────────────────── */
+/* ── Renders message text with basic markdown support ─────── */
 const MessageContent = ({ text }) => {
+  // Simple inline markdown: **bold**, `code`, newlines
   const parts = text.split(/(`[^`]+`|\*\*[^*]+\*\*)/g);
   return (
     <p className="cb-msg-text">
@@ -403,6 +382,7 @@ const MessageContent = ({ text }) => {
   );
 };
 
+/* ── Helpers ─────────────────────────────────────────────── */
 const uid = () => Math.random().toString(36).slice(2);
 const now = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
